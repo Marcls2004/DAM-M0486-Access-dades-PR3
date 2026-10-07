@@ -116,7 +116,7 @@ public class PR130Main {
                 NodeList nodeCiutat = elm.getElementsByTagName("ciutat");
                 String ciutat = nodeCiutat.item(0).getTextContent();
 
-                System.out.printf(PersonaFormatter.formatarPersona(nom, cognom, edat, ciutat));
+                System.out.println(PersonaFormatter.formatarPersona(nom, cognom, edat, ciutat));
             } 
         }
     }

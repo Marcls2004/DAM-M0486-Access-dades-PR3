@@ -98,10 +98,8 @@ public class PR131Main {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            if (!new File("biblioteca.xml").exists()) {
-                Document doc = dBuilder.newDocument("biblioteca.xml");
-                return doc;
-            }
+            if (!new File("biblioteca.xml").exists()) { new File().createNewFile(); }
+
             return null;
         } catch (Exception e) {
             e.printStackTrace();

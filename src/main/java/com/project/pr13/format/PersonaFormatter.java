@@ -38,7 +38,7 @@ public class PersonaFormatter {
     public static String formatarPersona(String nom, String cognom, String edat, String ciutat) {
         // *************** CODI PRÀCTICA **********************/
 
-        return "%-8s %-14s %-5s %-9s\n".formatted(nom, cognom, edat, ciutat);
+        return "%-8s %-14s %-5s %-9s".formatted(nom, cognom, edat, ciutat);
 
     }
 }

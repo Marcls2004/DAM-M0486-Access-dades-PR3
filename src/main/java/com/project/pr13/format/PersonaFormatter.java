@@ -16,7 +16,14 @@ public class PersonaFormatter {
      */
     public static String getCapçaleres() {
         // *************** CODI PRÀCTICA **********************/
-        return ""; // Substitueix pel teu
+        String capçelera = """
+        %-8s %-14s %-5s %-9s\n%-8s %-14s %-5s %-9s""".formatted(
+            "Nom","Cognom", "Edat", "Ciutat",
+            "--------", "--------------", "-----", "---------"
+        );
+
+
+        return capçelera; // Substitueix pel teu
     }
 
     /**
@@ -30,6 +37,8 @@ public class PersonaFormatter {
      */
     public static String formatarPersona(String nom, String cognom, String edat, String ciutat) {
         // *************** CODI PRÀCTICA **********************/
-        return ""; // Substitueix pel teu
+
+        return "%-8s %-14s %-5s %-9s\n".formatted(nom, cognom, edat, ciutat);
+
     }
 }

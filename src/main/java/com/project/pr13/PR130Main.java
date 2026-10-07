@@ -1,5 +1,6 @@
 package com.project.pr13;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -66,7 +67,22 @@ public class PR130Main {
      */
     public static Document parseXML(File inputFile) {
         // *************** CODI PRÀCTICA **********************/
-        return null; // Substitueix pel teu
+
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            Document doc = dBuilder.parse(inputFile);
+
+            doc.getDocumentElement().normalize();
+
+            return doc; // Substitueix pel teu
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -75,6 +91,8 @@ public class PR130Main {
      */
     public static void imprimirCapçaleres() {
         // *************** CODI PRÀCTICA **********************/
+        System.out.println(PersonaFormatter.getCapçaleres());
+
     }
 
     /**
@@ -85,5 +103,21 @@ public class PR130Main {
      */
     public static void imprimirDadesPersones(NodeList persones) {
         // *************** CODI PRÀCTICA **********************/
+        for (int i = 0; i < persones.getLength(); i++){
+            Node nodePersona = persones.item(i);
+            if (nodePersona.getNodeType() == Node.ELEMENT_NODE){
+                Element elm = (Element) nodePersona;
+                NodeList nodeNom = elm.getElementsByTagName("nom");
+                String nom = nodeNom.item(0).getTextContent();
+                NodeList nodeCognom = elm.getElementsByTagName("cognom");
+                String cognom = nodeCognom.item(0).getTextContent();
+                NodeList nodeEdat = elm.getElementsByTagName("edat");
+                String edat = nodeEdat.item(0).getTextContent();
+                NodeList nodeCiutat = elm.getElementsByTagName("ciutat");
+                String ciutat = nodeCiutat.item(0).getTextContent();
+
+                System.out.printf(PersonaFormatter.formatarPersona(nom, cognom, edat, ciutat));
+            } 
+        }
     }
 }

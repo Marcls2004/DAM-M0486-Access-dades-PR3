@@ -94,7 +94,19 @@ public class PR131Main {
      */
     static Document construirDocument() {
         // *************** CODI PRÀCTICA **********************/
-       return null; // Substitueix pel teu
+        try{
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            if (!new File("biblioteca.xml").exists()) {
+                Document doc = dBuilder.newDocument("biblioteca.xml");
+                return doc;
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**

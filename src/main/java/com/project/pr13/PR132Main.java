@@ -139,7 +139,28 @@ public class PR132Main {
      */
     public List<List<String>> llistarCursos() {
         // *************** CODI PRÀCTICA **********************/
-        return null; // Substitueix pel teu
+        try{
+            List<List<String>> listado = new ArrayList<>();
+            Document document = carregarDocumentXML(xmlFilePath);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NodeList cursos = (NodeList) xPath.evaluate("//curs", document, XPathConstants.NODESET);
+
+            for (int i = 0; i < cursos.getLength(); i++) {
+                Node curs = cursos.item(i);
+                String id = (String) xPath.evaluate("@id", curs, XPathConstants.STRING);
+                String tutor = (String) xPath.evaluate("tutor", curs, XPathConstants.STRING);
+                int totalAlumnes = ((Number) xPath.evaluate("count(alumnes/alumne)", curs, XPathConstants.NUMBER)).intValue();
+                List<String> fila = new ArrayList<>();
+                fila.add(id);
+                fila.add(tutor);
+                fila.add(String.valueOf(totalAlumnes));
+                listado.add(fila);
+            }
+
+            return listado; // Substitueix pel teu
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Error en processar l'expressió XPath.", e);
+        }
     }
 
     /**
@@ -160,7 +181,26 @@ public class PR132Main {
      */
     public List<List<String>> mostrarModuls(String idCurs) {
         // *************** CODI PRÀCTICA **********************/
-        return null; // Substitueix pel teu
+        try {
+            List<List<String>> listadoModuls = new ArrayList<>();
+            Document document = carregarDocumentXML(xmlFilePath);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NodeList moduls = (NodeList) xPath.evaluate("//curs[@id='" + idCurs + "']/moduls/modul", document, XPathConstants.NODESET);
+
+            for (int i = 0; i < moduls.getLength(); i++) {
+                Node modul = moduls.item(i);
+                String id = (String) xPath.evaluate("@id", modul, XPathConstants.STRING);
+                String titol = (String) xPath.evaluate("titol", modul, XPathConstants.STRING);
+                List<String> fila = new ArrayList<>();
+                fila.add(id);
+                fila.add(titol);
+                listadoModuls.add(fila);
+            }
+
+            return listadoModuls; // Substitueix pel teu
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Error en processar l'expressió XPath.", e);
+        }
     }
 
     /**
@@ -181,7 +221,22 @@ public class PR132Main {
      */
     public List<String> llistarAlumnes(String idCurs) {
         // *************** CODI PRÀCTICA **********************/
-        return null; // Substitueix pel teu
+        try {
+            List<String> listadoAlumnes = new ArrayList<>();
+            Document document = carregarDocumentXML(xmlFilePath);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            NodeList alumnes = (NodeList) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes/alumne", document, XPathConstants.NODESET);
+
+            for (int i = 0; i < alumnes.getLength(); i++) {
+                Node alumne = alumnes.item(i);
+                String nomAlumne = alumne.getTextContent();
+                listadoAlumnes.add(nomAlumne);
+            }
+
+            return listadoAlumnes; // Substitueix pel teu
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Error en processar l'expressió XPath.", e);
+        }
     }
 
     /**
@@ -202,6 +257,25 @@ public class PR132Main {
      */
     public void afegirAlumne(String idCurs, String nomAlumne) {
         // *************** CODI PRÀCTICA **********************/
+        try {
+            Document document = carregarDocumentXML(xmlFilePath);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            Node alumnesNode = (Node) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes", document, XPathConstants.NODE);
+
+            if (alumnesNode != null) {
+
+                Element nouAlumne = document.createElement("alumne");
+                nouAlumne.setTextContent(nomAlumne);
+                alumnesNode.appendChild(nouAlumne);
+
+                guardarDocumentXML(document);
+                System.out.println("Alumne afegit amb èxit.");
+            } else {
+                System.out.println("No s'ha trobat cap curs amb l'ID especificat.");
+            }
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Error en processar l'expressió XPath.", e);
+        }
     }
 
     /**
@@ -212,6 +286,21 @@ public class PR132Main {
      */
     public void eliminarAlumne(String idCurs, String nomAlumne) {
         // *************** CODI PRÀCTICA **********************/
+        try {
+            Document document = carregarDocumentXML(xmlFilePath);
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            Node alumnes = (Node) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes/alumne[text()='" + nomAlumne + "']", document, XPathConstants.NODE);
+
+            if (alumnes != null){
+                alumnes.getParentNode().removeChild(alumnes);
+                guardarDocumentXML(document);
+                System.out.println("Alumne eliminat amb èxit.");
+            } else {
+                System.out.println("No s'ha trobat cap alumne amb el nom especificat en aquest curs.");
+            }
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Error en processar l'expressió XPath.", e);
+        }
     }
 
     /**

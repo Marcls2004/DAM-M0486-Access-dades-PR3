@@ -92,7 +92,6 @@ public class PR130Main {
     public static void imprimirCapçaleres() {
         // *************** CODI PRÀCTICA **********************/
         System.out.println(PersonaFormatter.getCapçaleres());
-
     }
 
     /**

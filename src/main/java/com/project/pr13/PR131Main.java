@@ -95,12 +95,47 @@ public class PR131Main {
     static Document construirDocument() {
         // *************** CODI PRÀCTICA **********************/
         try{
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            if (!new File("biblioteca.xml").exists()) { new File().createNewFile(); }
 
-            return null;
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbFactory.newDocumentBuilder();
+            Document doc = db.newDocument();
+
+            Element biblioteca = doc.createElement("biblioteca");
+            doc.appendChild(biblioteca);
+
+            Element llibre = doc.createElement("llibre");
+            llibre.setAttribute("id", "001");
+            biblioteca.appendChild(llibre);
+
+            Element titol = doc.createElement("titol");
+            titol.setTextContent("El viatge dels venturons");
+            llibre.appendChild(titol);
+
+            Element autor = doc.createElement("autor");
+            autor.setTextContent("Joan Pla");
+            llibre.appendChild(autor);
+
+            Element anyPublicacio = doc.createElement("anyPublicacio");
+            anyPublicacio.setTextContent("1998");
+            llibre.appendChild(anyPublicacio);
+
+            Element editorial = doc.createElement("editorial");
+            editorial.setTextContent("Edicions Mar");
+            llibre.appendChild(editorial);
+
+            Element genere = doc.createElement("genere");
+            genere.setTextContent("Aventura");
+            llibre.appendChild(genere);
+
+            Element pagines = doc.createElement("pagines");
+            pagines.setTextContent("320");
+            llibre.appendChild(pagines);
+
+            Element disponible = doc.createElement("disponible");
+            disponible.setTextContent("true");
+            llibre.appendChild(disponible);
+
+            return doc;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -115,5 +150,19 @@ public class PR131Main {
      */
     private static void guardarDocument(Document doc, File fitxerSortida) {
         // *************** CODI PRÀCTICA **********************/
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+            Transformer transformer = transformerFactory.newTransformer();
+
+            DOMSource origen = new DOMSource(doc);
+
+            StreamResult desti = new StreamResult(fitxerSortida);
+
+            transformer.transform(origen, desti);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+
     }
 }

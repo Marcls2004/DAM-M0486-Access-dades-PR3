@@ -67,20 +67,27 @@ public class PR130Main {
      */
     public static Document parseXML(File inputFile) {
         // *************** CODI PRÀCTICA **********************/
-
         try {
+            // Crea una factoria per poder construir analitzadors de documents XML
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
+            // Utilitza la factoria per crear un objecte DocumentBuilder (l'analitzador real)
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
+            // Analitza (parseja) el fitxer XML de l'ordinador i genera l'arbre DOM en memòria
             Document doc = dBuilder.parse(inputFile);
 
+            // Normalitza l'estructura del document (elimina nodes de text buits o fragments separats)
+            // Això assegura que les dades es llegeixin de forma consistent
             doc.getDocumentElement().normalize();
 
-            return doc; // Substitueix pel teu
+            // Retorna el document XML completament preparat per ser llegit
+            return doc;
 
         } catch (Exception e) {
+            // Si hi ha qualsevol error (fitxer no trobat, XML mal format, etc.), mostra l'error
             e.printStackTrace();
+            // Retorna null per indicar que no s'ha pogut processar el fitxer
             return null;
         }
     }
@@ -91,6 +98,8 @@ public class PR130Main {
      */
     public static void imprimirCapçaleres() {
         // *************** CODI PRÀCTICA **********************/
+        // Crida al mètode estàtic de PersonaFormatter per obtenir el text de les capçaleres 
+        // alineades (Nom, Cognom, Edat, Ciutat i els guionets) i el mostra per pantalla.
         System.out.println(PersonaFormatter.getCapçaleres());
     }
 
@@ -102,21 +111,40 @@ public class PR130Main {
      */
     public static void imprimirDadesPersones(NodeList persones) {
         // *************** CODI PRÀCTICA **********************/
+        // Recorre tota la llista de nodes rebuts utilitzant la longitud de la llista (getLength())
         for (int i = 0; i < persones.getLength(); i++){
+            
+            // Obté el node actual de la llista segons la posició 'i'
             Node nodePersona = persones.item(i);
+            
+            // Comprova que el node realment sigui un element XML (una etiqueta amb dades) 
+            // i no un espai en blanc o un comentari de text dins de l'arxiu
             if (nodePersona.getNodeType() == Node.ELEMENT_NODE){
+                
+                // Fa un "cast" (conversió) de Node a Element per poder fer servir mètodes de cerca d'etiquetes
                 Element elm = (Element) nodePersona;
+                
+                // Busca l'etiqueta <nom> de la persona, agafa la primera que troba (item(0)) i en llegeix el text
                 NodeList nodeNom = elm.getElementsByTagName("nom");
                 String nom = nodeNom.item(0).getTextContent();
+                
+                // Busca l'etiqueta <cognom> de la persona, agafa la primera i en llegeix el text
                 NodeList nodeCognom = elm.getElementsByTagName("cognom");
                 String cognom = nodeCognom.item(0).getTextContent();
+                
+                // Busca l'etiqueta <edat> de la persona, agafa la primera i en llegeix el text
                 NodeList nodeEdat = elm.getElementsByTagName("edat");
                 String edat = nodeEdat.item(0).getTextContent();
+                
+                // Busca l'etiqueta <ciutat> de la persona, agafa la primera i en llegeix el text
                 NodeList nodeCiutat = elm.getElementsByTagName("ciutat");
                 String ciutat = nodeCiutat.item(0).getTextContent();
 
+                // Envia els 4 textos extrets al formatejador per crear la línia amb les columnes 
+                // perfectament alineades, i immediatament la imprimeix per pantalla.
                 System.out.println(PersonaFormatter.formatarPersona(nom, cognom, edat, ciutat));
             } 
         }
     }
+
 }

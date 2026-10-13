@@ -139,26 +139,44 @@ public class PR132Main {
      */
     public List<List<String>> llistarCursos() {
         // *************** CODI PRÀCTICA **********************/
-        try{
+        try {
+            // Inicialitza la llista de llistes on es guardaran les files de la taula final
             List<List<String>> listado = new ArrayList<>();
+            // Carrega l'arxiu XML del disc a la memòria RAM
             Document document = carregarDocumentXML(xmlFilePath);
+            // Instancia el motor de cerques XPath
             XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            // Executa l'expressió XPath per obtenir tots els nodes <curs> de l'arxiu XML
             NodeList cursos = (NodeList) xPath.evaluate("//curs", document, XPathConstants.NODESET);
 
+            // Recorre cada node de curs trobat
             for (int i = 0; i < cursos.getLength(); i++) {
                 Node curs = cursos.item(i);
+                
+                // Extreu el valor de l'atribut 'id' del curs actual (@id)
                 String id = (String) xPath.evaluate("@id", curs, XPathConstants.STRING);
+                // Extreu el contingut de text de l'etiqueta <tutor> que està dins del curs
                 String tutor = (String) xPath.evaluate("tutor", curs, XPathConstants.STRING);
+                
+                // Utilitza la funció count() d'XPath per comptar quants nodes <alumne> hi ha a l'etiqueta <alumnes>
                 int totalAlumnes = ((Number) xPath.evaluate("count(alumnes/alumne)", curs, XPathConstants.NUMBER)).intValue();
+                
+                // Crea una llista per representar la fila actual de dades de la taula
                 List<String> fila = new ArrayList<>();
                 fila.add(id);
                 fila.add(tutor);
-                fila.add(String.valueOf(totalAlumnes));
+                fila.add(String.valueOf(totalAlumnes)); // Converteix el número a text
+                
+                // Afegeix la fila al llistat final de cursos
                 listado.add(fila);
             }
 
-            return listado; // Substitueix pel teu
+            // Retorna tota la informació recopilada per ser mostrada per pantalla
+            return listado;
+            
         } catch (XPathExpressionException e) {
+            // Captura l'error de sintaxi d'XPath i llança una excepció detallada
             throw new RuntimeException("Error en processar l'expressió XPath.", e);
         }
     }
@@ -182,22 +200,38 @@ public class PR132Main {
     public List<List<String>> mostrarModuls(String idCurs) {
         // *************** CODI PRÀCTICA **********************/
         try {
+            // Inicialitza la llista per guardar els mòduls trobats
             List<List<String>> listadoModuls = new ArrayList<>();
+            // Carrega el fitxer XML de cursos
             Document document = carregarDocumentXML(xmlFilePath);
+            // Instancia el motor XPath
             XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            // Expressió XPath amb filtre: cerca el <curs> que coincideixi amb l'ID donat,
+            // i d'aquest, agafa tots els elements <modul> viatjant per la ruta de nodes
             NodeList moduls = (NodeList) xPath.evaluate("//curs[@id='" + idCurs + "']/moduls/modul", document, XPathConstants.NODESET);
 
+            // Recorre la llista de mòduls recuperats d'aquest curs especificat
             for (int i = 0; i < moduls.getLength(); i++) {
                 Node modul = moduls.item(i);
+                
+                // Extreu l'atribut 'id' del mòdul actual
                 String id = (String) xPath.evaluate("@id", modul, XPathConstants.STRING);
+                // Extreu el contingut de text del node fill <titol> del mòdul
                 String titol = (String) xPath.evaluate("titol", modul, XPathConstants.STRING);
+                
+                // Crea i omple la fila de dades del mòdul
                 List<String> fila = new ArrayList<>();
                 fila.add(id);
                 fila.add(titol);
+                
+                // Afegeix el mòdul a la llista de resultats
                 listadoModuls.add(fila);
             }
 
-            return listadoModuls; // Substitueix pel teu
+            // Retorna el llistat dels mòduls obtinguts per a aquest curs
+            return listadoModuls;
+            
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Error en processar l'expressió XPath.", e);
         }
@@ -222,22 +256,33 @@ public class PR132Main {
     public List<String> llistarAlumnes(String idCurs) {
         // *************** CODI PRÀCTICA **********************/
         try {
+            // Inicialitza la llista per emmagatzemar els noms dels alumnes
             List<String> listadoAlumnes = new ArrayList<>();
+            // Carrega el document XML
             Document document = carregarDocumentXML(xmlFilePath);
+            // Instancia l'objecte XPath
             XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            // Executa la cerca per obtenir tots els nodes <alumne> que pertanyen al curs seleccionat
             NodeList alumnes = (NodeList) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes/alumne", document, XPathConstants.NODESET);
 
+            // Recorre un per un els alumnes obtinguts de la cerca
             for (int i = 0; i < alumnes.getLength(); i++) {
                 Node alumne = alumnes.item(i);
+                // Extreu el text del node, que equival al nom de l'alumne
                 String nomAlumne = alumne.getTextContent();
+                // Afegeix el nom directament a la llista de cadenes
                 listadoAlumnes.add(nomAlumne);
             }
 
-            return listadoAlumnes; // Substitueix pel teu
+            // Retorna el llistat de cadenes amb els noms dels alumnes del curs
+            return listadoAlumnes;
+            
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Error en processar l'expressió XPath.", e);
         }
     }
+
 
     /**
      * Imprimeix per consola la llista d'alumnes d'un curs.
@@ -258,25 +303,35 @@ public class PR132Main {
     public void afegirAlumne(String idCurs, String nomAlumne) {
         // *************** CODI PRÀCTICA **********************/
         try {
+            // Carrega el fitxer de dades XML
             Document document = carregarDocumentXML(xmlFilePath);
             XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            // Busca el node pare <alumnes> del curs corresponent mitjançant XPath de tipus NODE (un sol node)
             Node alumnesNode = (Node) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes", document, XPathConstants.NODE);
 
+            // Si s'ha trobat el node de la llista d'alumnes del curs...
             if (alumnesNode != null) {
 
+                // Crea un nou tag XML buit anomenat <alumne> fent servir el constructor de la factoria del document
                 Element nouAlumne = document.createElement("alumne");
+                // Defineix el text de l'etiqueta amb el nom complet introduït per l'usuari
                 nouAlumne.setTextContent(nomAlumne);
+                // Insereix el nou element com a fill al final de la llista del node <alumnes>
                 alumnesNode.appendChild(nouAlumne);
 
+                // Desa permanentment les modificacions de l'estructura de dades al fitxer físic cursos.xml
                 guardarDocumentXML(document);
                 System.out.println("Alumne afegit amb èxit.");
             } else {
+                // Missatge de control en cas que l'ID de curs no hagi retornat cap coincidència
                 System.out.println("No s'ha trobat cap curs amb l'ID especificat.");
             }
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Error en processar l'expressió XPath.", e);
         }
     }
+
 
     /**
      * Elimina un alumne d'un curs especificat pel seu ID.
@@ -287,21 +342,31 @@ public class PR132Main {
     public void eliminarAlumne(String idCurs, String nomAlumne) {
         // *************** CODI PRÀCTICA **********************/
         try {
+            // Carrega l'arxiu XML
             Document document = carregarDocumentXML(xmlFilePath);
             XPath xPath = XPathFactory.newInstance().newXPath();
+            
+            // Busca de manera molt precisa la coincidència exacta d'un node <alumne> que es trobi
+            // sota el curs indicat i el text del qual coincideixi exactament amb el nom de l'alumne
             Node alumnes = (Node) xPath.evaluate("//curs[@id='" + idCurs + "']/alumnes/alumne[text()='" + nomAlumne + "']", document, XPathConstants.NODE);
 
+            // Si s'ha aconseguit trobar el node d'aquest alumne concret...
             if (alumnes != null){
+                // Puja un nivell fins al node pare (<alumnes>) i li demana que elimini aquest fill en concret
                 alumnes.getParentNode().removeChild(alumnes);
+                
+                // Desa l'estat actualitzat de l'arbre XML al fitxer físic
                 guardarDocumentXML(document);
                 System.out.println("Alumne eliminat amb èxit.");
             } else {
+                // Alerta si l'alumne no s'ha trobat o no està matriculat en aquest curs
                 System.out.println("No s'ha trobat cap alumne amb el nom especificat en aquest curs.");
             }
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Error en processar l'expressió XPath.", e);
         }
     }
+
 
     /**
      * Carrega el document XML des de la ruta especificada.

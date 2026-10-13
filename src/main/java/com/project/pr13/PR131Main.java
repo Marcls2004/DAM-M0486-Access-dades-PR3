@@ -94,50 +94,70 @@ public class PR131Main {
      */
     static Document construirDocument() {
         // *************** CODI PRÀCTICA **********************/
-        try{
-
+        try {
+            // Crea una factoria per poder obtenir un constructor de documents XML buits
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            
+            // Crea el constructor de documents (l'eina per fabricar el nostre XML de zero)
             DocumentBuilder db = dbFactory.newDocumentBuilder();
+            
+            // Instancia un document XML totalment nou i buit a la memòria
             Document doc = db.newDocument();
 
+            // Crea l'etiqueta arrel principal anomenada <biblioteca>
             Element biblioteca = doc.createElement("biblioteca");
+            // Afegeix l'etiqueta <biblioteca> com el node principal del document XML
             doc.appendChild(biblioteca);
 
+            // Crea l'etiqueta per a un llibre: <llibre>
             Element llibre = doc.createElement("llibre");
+            // Li afegeix l'atribut id amb el valor "001" -> <llibre id="001">
             llibre.setAttribute("id", "001");
+            // Fica el llibre dins de l'etiqueta biblioteca -> <biblioteca><llibre>...</llibre></biblioteca>
             biblioteca.appendChild(llibre);
 
+            // Crea l'etiqueta <titol>, li assigna el text i la penja com a filla de <llibre>
             Element titol = doc.createElement("titol");
             titol.setTextContent("El viatge dels venturons");
             llibre.appendChild(titol);
 
+            // Crea l'etiqueta <autor>, li assigna el text i la penja com a filla de <llibre>
             Element autor = doc.createElement("autor");
             autor.setTextContent("Joan Pla");
             llibre.appendChild(autor);
 
+            // Crea l'etiqueta <anyPublicacio>, li assigna el text i la penja com a filla de <llibre>
             Element anyPublicacio = doc.createElement("anyPublicacio");
             anyPublicacio.setTextContent("1998");
             llibre.appendChild(anyPublicacio);
 
+            // Crea l'etiqueta <editorial>, li assigna el text i la penja com a filla de <llibre>
             Element editorial = doc.createElement("editorial");
             editorial.setTextContent("Edicions Mar");
             llibre.appendChild(editorial);
 
+            // Crea l'etiqueta <genere>, li assigna el text i la penja com a filla de <llibre>
             Element genere = doc.createElement("genere");
             genere.setTextContent("Aventura");
             llibre.appendChild(genere);
 
+            // Crea l'etiqueta <pagines>, li assigna el text i la penja com a filla de <llibre>
             Element pagines = doc.createElement("pagines");
             pagines.setTextContent("320");
             llibre.appendChild(pagines);
 
+            // Crea l'etiqueta <disponible>, li assigna el text i la penja com a filla de <llibre>
             Element disponible = doc.createElement("disponible");
             disponible.setTextContent("true");
             llibre.appendChild(disponible);
 
+            // Retorna el document XML complet amb tota l'estructura que s'ha creat en memòria
             return doc;
+            
         } catch (Exception e) {
+            // Mostra per consola el rastre de l'error si falla la creació de l'analitzador XML
             e.printStackTrace();
+            // Retorna null per indicar que el document no s'ha pogut construir correctament
             return null;
         }
     }
@@ -151,18 +171,25 @@ public class PR131Main {
     private static void guardarDocument(Document doc, File fitxerSortida) {
         // *************** CODI PRÀCTICA **********************/
         try {
+            // Crea una factoria per poder generar objectes Transformer
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
+            // Crea un Transformer bàsic (objecte encarregat d'agafar dades en memòria i processar-les a fitxer)
             Transformer transformer = transformerFactory.newTransformer();
 
+            // Defineix la font de dades d'origen, que en aquest cas és l'arbre DOM (el nostre document XML)
             DOMSource origen = new DOMSource(doc);
 
+            // Defineix el lloc de destí on s'enviaran les dades (el fitxer físic on es guardarà)
             StreamResult desti = new StreamResult(fitxerSortida);
 
+            // Executa la transformació: agafa el document XML de la memòria i l'escriu al fitxer de text real
             transformer.transform(origen, desti);
+            
         } catch (TransformerException e) {
+            // Captura i mostra qualsevol error específic que passi durant el procés d'escriptura o conversió
             e.printStackTrace();
         }
-
     }
+
 }
